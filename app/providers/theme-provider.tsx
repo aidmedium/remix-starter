@@ -4,7 +4,7 @@ export function ThemeProvider({ children }: React.ComponentProps<typeof NextThem
   return (
     <NextThemesProvider
       attribute="class"
-      defaultTheme="dark"
+      defaultTheme="light"
       enableSystem
       disableTransitionOnChange
     >
