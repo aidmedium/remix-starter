@@ -71,6 +71,10 @@ module.exports = {
         "plugin:import/recommended",
         "plugin:import/typescript",
       ],
+      rules: {
+        // Disable the no-explicit-any rule to allow the use of 'any'
+        "@typescript-eslint/no-explicit-any": "off",
+      },
     },
 
     // Node

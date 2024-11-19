@@ -1,40 +1,43 @@
-"use server";
+import { redirect } from "@remix-run/react";
 
-import { revalidateTag } from "next/cache";
-import { redirect } from "next/navigation";
-import { cache } from "react";
-
-import { sdk } from "@lib/config";
-import { updateCart } from "@lib/data/cart";
-import medusaError from "@lib/util/medusa-error";
 import { HttpTypes } from "@medusajs/types";
 
-import { getAuthHeaders, removeAuthToken, setAuthToken } from "./cookies";
+import { sdk } from "@/lib/config";
+import medusaError from "@/lib/utils/medusa-error";
 
-export const getCustomer = cache(async function () {
+import { removeAuthToken, setAuthToken, withAuthHeaders } from "./auth";
+
+export const getCustomer = withAuthHeaders(async function (request, authHeaders) {
   return await sdk.store.customer
-    .retrieve({}, { next: { tags: ["customer"] }, ...getAuthHeaders() })
+    .retrieve({}, authHeaders)
     .then(({ customer }) => customer)
     .catch(() => null);
 });
 
-export const updateCustomer = cache(async function (body: HttpTypes.StoreUpdateCustomer) {
+export const updateCustomer = withAuthHeaders(async function (
+  request,
+  authHeaders,
+  body: HttpTypes.StoreUpdateCustomer
+) {
   const updateRes = await sdk.store.customer
-    .update(body, {}, getAuthHeaders())
+    .update(body, {}, authHeaders)
     .then(({ customer }) => customer)
     .catch(medusaError);
 
-  revalidateTag("customer");
   return updateRes;
 });
 
-export async function signup(_currentState: unknown, formData: FormData) {
-  const password = formData.get("password") as string;
+export const signup = withAuthHeaders(async function (
+  request,
+  authHeaders,
+  data: { email: string; password: string; first_name: string; last_name: string; phone: string }
+) {
+  const password = data.password;
   const customerForm = {
-    email: formData.get("email") as string,
-    first_name: formData.get("first_name") as string,
-    last_name: formData.get("last_name") as string,
-    phone: formData.get("phone") as string,
+    email: data.email,
+    first_name: data.first_name,
+    last_name: data.last_name,
+    phone: data.phone,
   };
 
   try {
@@ -56,103 +59,87 @@ export async function signup(_currentState: unknown, formData: FormData) {
       password,
     });
 
-    setAuthToken(loginToken as string);
+    setAuthToken(request.headers, loginToken as string);
 
-    revalidateTag("customer");
     return createdCustomer;
   } catch (error: any) {
     return error.toString();
   }
-}
+});
 
-export async function login(_currentState: unknown, formData: FormData) {
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-
+export const login = withAuthHeaders(async function (
+  request,
+  authHeaders,
+  { email, password }: { email: string; password: string }
+) {
   try {
-    await sdk.auth.login("customer", "emailpass", { email, password }).then((token) => {
-      setAuthToken(token as string);
-      revalidateTag("customer");
-    });
+    const loginToken = await sdk.auth.login("customer", "emailpass", { email, password });
+    setAuthToken(request.headers, loginToken as string);
   } catch (error: any) {
     return error.toString();
   }
-}
+});
 
-export async function signout(countryCode: string) {
+export const signout = withAuthHeaders(async function (request) {
   await sdk.auth.logout();
-  removeAuthToken();
-  revalidateTag("auth");
-  revalidateTag("customer");
-  redirect(`/${countryCode}/account`);
-}
+  removeAuthToken(request.headers);
+  redirect("/login");
+});
 
-export const addCustomerAddress = async (
-  _currentState: unknown,
-  formData: FormData
-): Promise<any> => {
-  const address = {
-    first_name: formData.get("first_name") as string,
-    last_name: formData.get("last_name") as string,
-    company: formData.get("company") as string,
-    address_1: formData.get("address_1") as string,
-    address_2: formData.get("address_2") as string,
-    city: formData.get("city") as string,
-    postal_code: formData.get("postal_code") as string,
-    province: formData.get("province") as string,
-    country_code: formData.get("country_code") as string,
-    phone: formData.get("phone") as string,
-  };
-
+export const addCustomerAddress = withAuthHeaders(async function (
+  request,
+  authHeaders,
+  data: {
+    first_name: string;
+    last_name: string;
+    company: string;
+    address_1: string;
+    address_2: string;
+    city: string;
+    postal_code: string;
+    province: string;
+    country_code: string;
+    phone: string;
+  }
+) {
   return sdk.store.customer
-    .createAddress(address, {}, getAuthHeaders())
-    .then(({ customer }) => {
-      revalidateTag("customer");
-      return { success: true, error: null };
-    })
-    .catch((err) => {
-      return { success: false, error: err.toString() };
-    });
-};
+    .createAddress(data, {}, authHeaders)
+    .then(() => ({ success: true, error: null }))
+    .catch((err) => ({ success: false, error: err.toString() }));
+});
 
-export const deleteCustomerAddress = async (addressId: string): Promise<void> => {
+export const deleteCustomerAddress = withAuthHeaders(async function (
+  request,
+  authHeaders,
+  addressId: string
+) {
   await sdk.store.customer
-    .deleteAddress(addressId, getAuthHeaders())
-    .then(() => {
-      revalidateTag("customer");
-      return { success: true, error: null };
-    })
-    .catch((err) => {
-      return { success: false, error: err.toString() };
-    });
-};
+    .deleteAddress(addressId, authHeaders)
+    .then(() => ({ success: true, error: null }))
+    .catch((err) => ({ success: false, error: err.toString() }));
+});
 
-export const updateCustomerAddress = async (
+export const updateCustomerAddress = withAuthHeaders(async function (
+  request,
+  authHeaders,
   currentState: Record<string, unknown>,
-  formData: FormData
-): Promise<any> => {
+  data: {
+    first_name: string;
+    last_name: string;
+    company: string;
+    address_1: string;
+    address_2: string;
+    city: string;
+    postal_code: string;
+    province: string;
+    country_code: string;
+    phone: string;
+  }
+) {
   const addressId = currentState.addressId as string;
 
-  const address = {
-    first_name: formData.get("first_name") as string,
-    last_name: formData.get("last_name") as string,
-    company: formData.get("company") as string,
-    address_1: formData.get("address_1") as string,
-    address_2: formData.get("address_2") as string,
-    city: formData.get("city") as string,
-    postal_code: formData.get("postal_code") as string,
-    province: formData.get("province") as string,
-    country_code: formData.get("country_code") as string,
-    phone: formData.get("phone") as string,
-  };
-
   return sdk.store.customer
-    .updateAddress(addressId, address, {}, getAuthHeaders())
-    .then(() => {
-      revalidateTag("customer");
-      return { success: true, error: null };
-    })
-    .catch((err) => {
-      return { success: false, error: err.toString() };
-    });
-};
+    .updateAddress(addressId, data, {}, authHeaders)
+    .then(() => ({ success: true, error: null }))
+    .catch((err) => ({ success: false, error: err.toString() }));
+});
