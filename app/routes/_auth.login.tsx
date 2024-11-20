@@ -96,5 +96,5 @@ export const action: ActionFunction = async ({ request }) => {
     return { message: result };
   }
 
-  return redirect("/", { headers: request.headers });
+  return redirect("/account", { headers: request.headers });
 };

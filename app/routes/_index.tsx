@@ -13,6 +13,7 @@ export default function Index() {
       <Heading>Starter</Heading>
       <Paragraph>Welcome to Remix Starter!</Paragraph>
       <Link to="/login">Login</Link>
+      <Link to="/account">Account</Link>
     </div>
   );
 }
