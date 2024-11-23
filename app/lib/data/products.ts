@@ -18,11 +18,17 @@ export async function getProductsById(data: { ids: string[]; regionId: string })
     .then(({ products }) => products);
 }
 
-export async function getProductByHandle(handle: string, regionId: string) {
+export async function getProductByHandle(handle: string, countryCode: string) {
+  const region = await getRegion(countryCode);
+
+  if (!region) {
+    return null;
+  }
+
   return sdk.store.product
     .list({
       handle,
-      region_id: regionId,
+      region_id: region.id,
       fields: "*variants.calculated_price,+variants.inventory_quantity",
     })
     .then(({ products }) => products[0]);

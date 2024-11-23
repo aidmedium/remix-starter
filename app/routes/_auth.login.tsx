@@ -1,8 +1,9 @@
 import { type ActionFunction, type MetaFunction } from "@remix-run/node";
-import { Form, Link, redirect, useActionData, useNavigation } from "@remix-run/react";
+import { Form, redirect, useActionData, useNavigation } from "@remix-run/react";
 
 import { z } from "zod";
 
+import { LocalizedLink } from "@/components/localized-link";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -53,16 +54,16 @@ export default function AuthLogin() {
       </div>
 
       <Paragraph className="text-center">
-        <Link className="link" to="/reset-password">
+        <LocalizedLink className="link" to="/reset-password">
           Forgot password?
-        </Link>
+        </LocalizedLink>
       </Paragraph>
 
       <Paragraph className="text-center">
         Don&apos;t have an account?&nbsp;&nbsp;
-        <Link className="link" to="/register">
+        <LocalizedLink className="link" to="/register">
           Register
-        </Link>
+        </LocalizedLink>
       </Paragraph>
     </Form>
   );

@@ -44,13 +44,13 @@ export function Header() {
             <Paragraph>Info</Paragraph>
           </a>
           <div className="flex items-center gap-6">
-            <Link to="/login">Account</Link>
+            <LocalizedLink to="/login">Account</Link>
             <CartSheet>Cart</CartSheet>
           </div>
         </div>
 
         <div className="flex items-center gap-6 md:hidden">
-          <Link to="/login">
+          <LocalizedLink to="/login">
             <User size={18} />
           </Link>
           <CartSheet>
