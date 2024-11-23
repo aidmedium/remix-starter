@@ -29,7 +29,7 @@ export async function getProductByHandle(handle: string, countryCode: string) {
     .list({
       handle,
       region_id: region.id,
-      fields: "*variants.calculated_price,+variants.inventory_quantity",
+      fields: "*variants.calculated_price,+variants.inventory_quantity,+collection",
     })
     .then(({ products }) => products[0]);
 }
@@ -59,8 +59,8 @@ export async function getProductsList(data: {
   return sdk.store.product
     .list(
       {
-        limit,
-        offset,
+        // limit,
+        // offset,
         region_id: region.id,
         fields: "*variants.calculated_price",
         ...queryParams,

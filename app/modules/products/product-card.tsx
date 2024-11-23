@@ -1,16 +1,14 @@
 import { HttpTypes } from "@medusajs/types";
 
 import { LocalizedLink } from "@/components/localized-link";
-import { Heading } from "@/components/ui/text";
+import { Heading, Paragraph } from "@/components/ui/text";
 import { getProductPrice } from "@/lib/utils/get-product-price";
-
-import { ProductPrice } from "./product-price";
 
 export function ProductCard({ product }: { product: HttpTypes.StoreProduct }) {
   const sourceUrl = !product.images ? "" : product.images[0].url;
   const altText = product.title;
 
-  const { cheapestPrice } = getProductPrice({
+  const { cheapestPrice: price } = getProductPrice({
     product: product,
   });
 
@@ -27,7 +25,16 @@ export function ProductCard({ product }: { product: HttpTypes.StoreProduct }) {
       </div>
       <div className="grid gap-1 text-sm">
         <Heading variant="h4">{product.title}</Heading>
-        {cheapestPrice && <ProductPrice price={cheapestPrice} />}
+        {price && (
+          <>
+            {price.price_type === "sale" && (
+              <Paragraph className="text-muted-foreground line-through">
+                {price.original_price}
+              </Paragraph>
+            )}
+            <Paragraph>{price.calculated_price}</Paragraph>
+          </>
+        )}
       </div>
     </LocalizedLink>
   );
