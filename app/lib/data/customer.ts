@@ -143,3 +143,27 @@ export const updateCustomerAddress = withAuthHeaders(async function (
     .then(() => ({ success: true, error: null }))
     .catch((err) => ({ success: false, error: err.toString() }));
 });
+
+export const resetPassword = withAuthHeaders(async function (
+  request,
+  authHeaders,
+  { email }: { email: string }
+) {
+  try {
+    await sdk.auth.resetPassword("customer", "emailpass", { identifier: email });
+  } catch (error: any) {
+    return error.toString();
+  }
+});
+
+export const changePassword = withAuthHeaders(async function (
+  request,
+  authHeaders,
+  { email, password }: { email: string; password: string }
+) {
+  try {
+    await sdk.auth.updateProvider("customer", "emailpass", { email, password });
+  } catch (error: any) {
+    return error.toString();
+  }
+});
