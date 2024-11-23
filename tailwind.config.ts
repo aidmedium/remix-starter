@@ -5,10 +5,10 @@ export default {
   content: ["./app/**/{**,.client,.server}/**/*.{js,jsx,ts,tsx}"],
   theme: {
     container: {
-      center: "true",
-      padding: "2rem",
+      center: true,
+      padding: "1rem",
       screens: {
-        "2xl": "1400px",
+        "2xl": "1920px",
       },
     },
     extend: {

@@ -14,6 +14,7 @@ export default function Index() {
       <Paragraph>Welcome to Remix Starter!</Paragraph>
       <Link to="/login">Login</Link>
       <Link to="/account">Account</Link>
+      <Link to="/ng/store">Store</Link>
     </div>
   );
 }
