@@ -1,6 +1,8 @@
 import { LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 
+import { RelatedProducts } from "@/routes/$cc.products.$handle.related";
+
 import { getProductByHandle } from "@/lib/data/products";
 import { ProductActions } from "@/modules/products/product-actions";
 import { ProductImageGallery } from "@/modules/products/product-image-gallery";
@@ -26,14 +28,18 @@ export default function Product() {
   const { product } = useLoaderData<typeof loader>();
 
   return (
-    <div className="relative grid gap-8 py-6 sm:gap-20 lg:grid-cols-2">
-      <ProductImageGallery images={product.images ?? []} />
+    <>
+      <div className="relative grid gap-8 py-6 sm:gap-20 lg:grid-cols-2">
+        <ProductImageGallery images={product.images ?? []} />
 
-      <div className="flex h-fit w-full flex-col gap-12 lg:sticky lg:top-40 lg:mr-20 lg:max-w-md">
-        <ProductInfo product={product} />
-        <ProductActions product={product} />
-        <ProductAdditionalInfo product={product} />
+        <div className="flex h-fit w-full flex-col gap-12 lg:sticky lg:top-40 lg:mr-20 lg:max-w-md">
+          <ProductInfo product={product} />
+          <ProductActions product={product} />
+          <ProductAdditionalInfo product={product} />
+        </div>
       </div>
-    </div>
+
+      <RelatedProducts key={product.id} />
+    </>
   );
 }

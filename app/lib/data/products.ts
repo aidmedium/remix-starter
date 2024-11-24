@@ -29,7 +29,7 @@ export async function getProductByHandle(handle: string, countryCode: string) {
     .list({
       handle,
       region_id: region.id,
-      fields: "*variants.calculated_price,+variants.inventory_quantity,+collection",
+      fields: "*variants.calculated_price,+variants.inventory_quantity,*categories",
     })
     .then(({ products }) => products[0]);
 }
