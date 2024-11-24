@@ -5,7 +5,7 @@ import { HttpTypes } from "@medusajs/types";
 import { sdk } from "@/lib/config";
 import medusaError from "@/lib/utils/medusa-error";
 
-import { removeAuthToken, setAuthToken, withAuthHeaders } from "./auth";
+import { removeAuthToken, setAuthToken, withAuthHeaders } from "./cookies";
 
 export const getCustomer = withAuthHeaders(async function (request, authHeaders) {
   return await sdk.store.customer

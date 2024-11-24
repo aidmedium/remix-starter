@@ -1,12 +1,15 @@
+import { useFetcher, useParams } from "@remix-run/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { HttpTypes } from "@medusajs/types";
 import lodash from "lodash";
+import { toast } from "sonner";
+
+import { action } from "@/routes/$cc.products.$handle.add-to-cart";
 
 // import MobileActions from "./mobile-actions";
 import { Button } from "@/components/ui/button";
 
-// import { addToCart } from "@/lib/data/cart";
 import { ProductOptionSelect } from "./product-options-select";
 import { ProductPrice } from "./product-price";
 import { ProductQuantitySelect } from "./product-quantity-select";
@@ -21,9 +24,17 @@ const optionsAsKeymap = (variantOptions: HttpTypes.StoreProductVariant["options"
 };
 
 export function ProductActions({ product }: { product: HttpTypes.StoreProduct }) {
+  const fetcher = useFetcher<typeof action>();
+  const isAdding = fetcher.state !== "idle";
   const [options, setOptions] = useState<Record<string, string | undefined>>({});
-  const [isAdding, setIsAdding] = useState(false);
-  // const countryCode = useParams().countryCode as string;
+  const countryCode = useParams().cc as string;
+
+  useEffect(() => {
+    if (fetcher.state !== "idle" || !fetcher.data) return;
+
+    // Action completed, react to the response
+    toast(JSON.stringify(fetcher.data, null, 2));
+  }, [fetcher.state, fetcher.data]);
 
   // If there is only 1 variant, preselect the options
   useEffect(() => {
@@ -34,9 +45,7 @@ export function ProductActions({ product }: { product: HttpTypes.StoreProduct })
   }, [product.variants]);
 
   const selectedVariant = useMemo(() => {
-    if (!product.variants || product.variants.length === 0) {
-      return;
-    }
+    if (!product.variants || product.variants.length === 0) return;
 
     return product.variants.find((v) => {
       const variantOptions = optionsAsKeymap(v.options);
@@ -58,19 +67,14 @@ export function ProductActions({ product }: { product: HttpTypes.StoreProduct })
   // check if the selected variant is in stock
   const inStock = useMemo(() => {
     // If we don't manage inventory, we can always add to cart
-    if (selectedVariant && !selectedVariant.manage_inventory) {
-      return true;
-    }
+    if (selectedVariant && !selectedVariant.manage_inventory) return true;
 
     // If we allow back orders on the variant, we can add to cart
-    if (selectedVariant?.allow_backorder) {
-      return true;
-    }
+    if (selectedVariant?.allow_backorder) return true;
 
     // If there is inventory available, we can add to cart
-    if (selectedVariant?.manage_inventory && (selectedVariant?.inventory_quantity || 0) > 0) {
+    if (selectedVariant?.manage_inventory && (selectedVariant?.inventory_quantity || 0) > 0)
       return true;
-    }
 
     // Otherwise, we can't add to cart
     return false;
@@ -84,20 +88,15 @@ export function ProductActions({ product }: { product: HttpTypes.StoreProduct })
   const handleAddToCart = async () => {
     if (!selectedVariant?.id) return null;
 
-    setIsAdding(true);
-
-    // await addToCart({
-    //   variantId: selectedVariant.id,
-    //   quantity,
-    //   countryCode,
-    // });
-
-    setIsAdding(false);
+    fetcher.submit(
+      { variantId: selectedVariant.id, quantity, countryCode },
+      { action: "add-to-cart", method: "POST" }
+    );
   };
 
   return (
     <div className="flex flex-col gap-y-4" ref={actionsRef}>
-      {!!product.variants?.length && (
+      {(product.variants?.length ?? 0) > 1 && (
         <div className="flex flex-col gap-y-2">
           {(product.options || []).map((option) => (
             <div key={option.id}>
@@ -116,7 +115,11 @@ export function ProductActions({ product }: { product: HttpTypes.StoreProduct })
       <ProductPrice product={product} variant={selectedVariant} />
 
       <div className="flex items-center gap-2">
-        <ProductQuantitySelect quantity={quantity} maxQuantity={maxQuantity} action={setQuantity} />
+        <ProductQuantitySelect
+          quantity={quantity}
+          maxQuantity={maxQuantity}
+          setQuantity={setQuantity}
+        />
         <Button
           onClick={handleAddToCart}
           disabled={!inStock || !selectedVariant}

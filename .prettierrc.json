@@ -8,6 +8,7 @@
   "importOrder": [
     "^(react|@remix-run?/?([a-zA-Z/]*))$",
     "<THIRD_PARTY_MODULES>",
+    "^@/routes/(.*)$",
     "^@/(.*)$",
     "^[./]"
   ],

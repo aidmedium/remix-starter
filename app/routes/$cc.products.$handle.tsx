@@ -24,7 +24,6 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 
 export default function Product() {
   const { product } = useLoaderData<typeof loader>();
-  console.log(product);
 
   return (
     <div className="relative grid gap-8 py-6 sm:gap-20 lg:grid-cols-2">
