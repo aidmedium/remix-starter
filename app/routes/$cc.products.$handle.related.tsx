@@ -54,6 +54,8 @@ export function RelatedProducts() {
     submit({}, { method: "GET", action: "related" });
   }, []);
 
+  // if (state === "loading") return <div>Loading...</div>;
+
   if (!data?.products) return null;
 
   return (

@@ -7,6 +7,7 @@ import { Link, type LinkProps, useParams } from "@remix-run/react";
 export const LocalizedLink = ({ to, ...props }: LinkProps) => {
   const params = useParams();
   const countryCode = params.cc ?? "";
+  const href = !countryCode ? to : `/${countryCode}${to}`;
 
-  return <Link to={`/${countryCode}${to}`} {...props} />;
+  return <Link to={href} {...props} />;
 };

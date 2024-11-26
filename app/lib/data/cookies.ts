@@ -2,12 +2,13 @@ import { Cookie, createCookie } from "@remix-run/node";
 
 import { config } from "@/lib/config";
 
+const MAX_AGE = 60 * 60 * 24 * 30; // 30 days
 export const authCookie = createCookie(config.AUTH_COOKIE_NAME, {
   path: "/",
   httpOnly: true,
   sameSite: "lax",
   secure: process.env.NODE_ENV === "production",
-  maxAge: 60 * 60 * 24 * 7, // 30 days
+  maxAge: MAX_AGE,
 });
 
 type AuthHeaders = { authorization: string } | Record<string, never>;
@@ -56,7 +57,7 @@ export async function setCookie(headers: Headers, cookie: Cookie | string, value
   return headers.append(
     "set-cookie",
     typeof cookie === "string"
-      ? `${cookie}=${value}; Max-Age=604800; path=/;`
+      ? `${cookie}=${value}; Max-Age=${MAX_AGE}; path=/;`
       : await cookie.serialize(value)
   );
 }

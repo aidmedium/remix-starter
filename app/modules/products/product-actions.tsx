@@ -10,6 +10,7 @@ import { action } from "@/routes/$cc.products.$handle.add-to-cart";
 // import MobileActions from "./mobile-actions";
 import { Button } from "@/components/ui/button";
 
+import { useCartSheet } from "../cart/use-cart-sheet";
 import { ProductOptionSelect } from "./product-options-select";
 import { ProductPrice } from "./product-price";
 import { ProductQuantitySelect } from "./product-quantity-select";
@@ -24,16 +25,22 @@ const optionsAsKeymap = (variantOptions: HttpTypes.StoreProductVariant["options"
 };
 
 export function ProductActions({ product }: { product: HttpTypes.StoreProduct }) {
+  const { toggleCartOpen } = useCartSheet();
   const fetcher = useFetcher<typeof action>();
   const isAdding = fetcher.state !== "idle";
+
   const [options, setOptions] = useState<Record<string, string | undefined>>({});
   const countryCode = useParams().cc as string;
 
   useEffect(() => {
     if (fetcher.state !== "idle" || !fetcher.data) return;
 
-    // Action completed, react to the response
-    toast(JSON.stringify(fetcher.data, null, 2));
+    if (fetcher.data.error) {
+      toast.error(fetcher.data.error);
+    } else {
+      toast.success("Product added to cart");
+      toggleCartOpen(true);
+    }
   }, [fetcher.state, fetcher.data]);
 
   // If there is only 1 variant, preselect the options
@@ -89,8 +96,8 @@ export function ProductActions({ product }: { product: HttpTypes.StoreProduct })
     if (!selectedVariant?.id) return null;
 
     fetcher.submit(
-      { variantId: selectedVariant.id, quantity, countryCode },
-      { action: "add-to-cart", method: "POST" }
+      { variantId: selectedVariant.id, quantity },
+      { action: `/${countryCode}/cart`, method: "POST" }
     );
   };
 

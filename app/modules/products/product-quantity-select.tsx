@@ -7,16 +7,12 @@ type ItemQtySelectProps = {
   setQuantity: (quantity: number) => void;
 };
 
-export function ProductQuantitySelect({
-  quantity,
-  maxQuantity,
-  setQuantity: action,
-}: ItemQtySelectProps) {
+export function ProductQuantitySelect({ quantity, maxQuantity, setQuantity }: ItemQtySelectProps) {
   return (
     <Select
       disabled={!maxQuantity}
       value={quantity.toString()}
-      onValueChange={(quantity) => action(+quantity)}
+      onValueChange={(quantity) => setQuantity(+quantity)}
     >
       <SelectTrigger
         className={cn("w-20", {
@@ -34,7 +30,7 @@ export function ProductQuantitySelect({
             // Switch to `length: maxQuantity` to allow users select as many as is available.
           },
           (_, i) => (
-            <SelectItem key={i} value={String(i + 1)} className="">
+            <SelectItem key={i} value={String(i + 1)}>
               {i + 1}
             </SelectItem>
           )

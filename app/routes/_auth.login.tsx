@@ -1,5 +1,5 @@
-import { type ActionFunction, type MetaFunction } from "@remix-run/node";
-import { Form, redirect, useActionData, useNavigation } from "@remix-run/react";
+import { ActionFunctionArgs, type MetaFunction, redirect } from "@remix-run/node";
+import { Form, useActionData, useNavigation } from "@remix-run/react";
 
 import { z } from "zod";
 
@@ -69,7 +69,7 @@ export default function AuthLogin() {
   );
 }
 
-export const action: ActionFunction = async ({ request }) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
 
   const emailData = z
@@ -88,14 +88,19 @@ export const action: ActionFunction = async ({ request }) => {
     };
   }
 
-  const result = await login(request, {
-    email: emailData.data,
-    password: passwordData.data,
-  });
+  try {
+    const result = await login(request, {
+      email: emailData.data,
+      password: passwordData.data,
+    });
+    if (result) {
+      return { message: result };
+    }
 
-  if (result) {
-    return { message: result };
+    return redirect("/account", { headers: request.headers });
+  } catch (error) {
+    return {
+      message: error instanceof Error ? error.message : "Something went wrong. Please try again.",
+    };
   }
-
-  return redirect("/account", { headers: request.headers });
 };
