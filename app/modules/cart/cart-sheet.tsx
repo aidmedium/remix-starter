@@ -28,8 +28,6 @@ export function CartSheet() {
   const items = cart?.items || [];
   const currencyCode = cart?.region?.currency_code || "NGN";
 
-  console.log(items);
-
   let cartFooter = (
     <SheetFooter className="mt-auto gap-4 border-t pt-4">
       <div className="flex w-full flex-col font-semibold [&>div]:flex [&>div]:justify-between">
@@ -39,7 +37,9 @@ export function CartSheet() {
         </div>
         <div>
           <Paragraph variant="label">Taxes</Paragraph>
-          <Paragraph variant="label">$ 0.00</Paragraph>
+          <Paragraph variant="label">
+            {convertToLocale({ amount: cart?.tax_total || 0, currency_code: currencyCode })}
+          </Paragraph>
         </div>
         <div>
           <Paragraph>Subtotal</Paragraph>
@@ -50,7 +50,11 @@ export function CartSheet() {
       </div>
 
       <SheetTrigger asChild>
-        <Button variant="secondary">Checkout</Button>
+        <LocalizedLink to="/checkout">
+          <Button className="w-full" variant="secondary">
+            Checkout
+          </Button>
+        </LocalizedLink>
       </SheetTrigger>
     </SheetFooter>
   );

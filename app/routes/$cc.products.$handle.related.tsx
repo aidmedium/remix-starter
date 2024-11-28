@@ -51,6 +51,7 @@ export function RelatedProducts() {
   const { data, submit } = useFetcher<typeof loader>();
 
   useEffect(() => {
+    // fetch related products from the product detail page
     submit({}, { method: "GET", action: "related" });
   }, []);
 

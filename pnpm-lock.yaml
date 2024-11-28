@@ -15,14 +15,17 @@ importers:
         specifier: ^3.9.1
         version: 3.9.1(react-hook-form@7.53.2(react@18.3.1))
       '@medusajs/js-sdk':
-        specifier: ^2.0.4
-        version: 2.0.4(awilix@8.0.1)(vite@5.4.11(@types/node@22.9.0))
+        specifier: latest
+        version: 2.0.7(awilix@8.0.1)(vite@5.4.11(@types/node@22.9.0))
       '@radix-ui/react-accordion':
         specifier: ^1.2.1
         version: 1.2.1(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-avatar':
         specifier: ^1.1.1
         version: 1.1.1(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-checkbox':
+        specifier: ^1.1.2
+        version: 1.1.2(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-dialog':
         specifier: ^1.1.2
         version: 1.1.2(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -106,8 +109,8 @@ importers:
         version: 3.23.8
     devDependencies:
       '@medusajs/types':
-        specifier: ^2.0.4
-        version: 2.0.4(awilix@8.0.1)(vite@5.4.11(@types/node@22.9.0))
+        specifier: latest
+        version: 2.0.7(awilix@8.0.1)(vite@5.4.11(@types/node@22.9.0))
       '@remix-run/dev':
         specifier: ^2.14.0
         version: 2.14.0(@remix-run/react@2.14.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.6.3))(@remix-run/serve@2.14.0(typescript@5.6.3))(@types/node@22.9.0)(typescript@5.6.3)(vite@5.4.11(@types/node@22.9.0))
@@ -707,12 +710,12 @@ packages:
   '@mdx-js/mdx@2.3.0':
     resolution: {integrity: sha512-jLuwRlz8DQfQNiUCJR50Y09CGPq3fLtmtUQfVrj79E0JWu3dvsVcxVIcfhR5h0iXu+/z++zDrYeiJqifRynJkA==}
 
-  '@medusajs/js-sdk@2.0.4':
-    resolution: {integrity: sha512-mh5MSySZmd/U0E3NWFfs49k0S8zfBY6z6PKlBp43tCJt17bVB2KoJjAMV9BImuI6MRrhR6suLVeXbmZ7wE8ojw==}
+  '@medusajs/js-sdk@2.0.7':
+    resolution: {integrity: sha512-gLJ58C79/X0R7tOsK8FWoeg5wLriiYPPmAmevPojF2pws28aYtWT3hWWpsKb0KoeV415TmCkFleg7oxgCfk3EA==}
     engines: {node: '>=20'}
 
-  '@medusajs/types@2.0.4':
-    resolution: {integrity: sha512-DnfeQdesmYcn7tEC9KMWTxGbcQIF4hj41+tXA1HKvTqzut9mFETmO8PfcdC2AyRRG3o2ntpNEGs8G0McJoRVmg==}
+  '@medusajs/types@2.0.7':
+    resolution: {integrity: sha512-q9fqYNlGiw02qXNzuVP2YupTJBw0r5imXCkWK+oUUtMqOggic8pW4XgYV+oU+XHibBTDa5awlc9dUl5ALjvoew==}
     engines: {node: '>=20'}
     peerDependencies:
       awilix: ^8.0.1
@@ -797,6 +800,19 @@ packages:
 
   '@radix-ui/react-avatar@1.1.1':
     resolution: {integrity: sha512-eoOtThOmxeoizxpX6RiEsQZ2wj5r4+zoeqAwO0cBaFQGjJwIH3dIX0OCxNrCyrrdxG+vBweMETh3VziQG7c1kw==}
+    peerDependencies:
+      '@types/react': '*'
+      '@types/react-dom': '*'
+      react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+      react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      '@types/react-dom':
+        optional: true
+
+  '@radix-ui/react-checkbox@1.1.2':
+    resolution: {integrity: sha512-/i0fl686zaJbDQLNKrkCbMyDm6FQMt4jg323k7HuqitoANm9sE23Ql8yOK3Wusk34HSLKDChhMux05FnP6KUkw==}
     peerDependencies:
       '@types/react': '*'
       '@types/react-dom': '*'
@@ -4945,9 +4961,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@medusajs/js-sdk@2.0.4(awilix@8.0.1)(vite@5.4.11(@types/node@22.9.0))':
+  '@medusajs/js-sdk@2.0.7(awilix@8.0.1)(vite@5.4.11(@types/node@22.9.0))':
     dependencies:
-      '@medusajs/types': 2.0.4(awilix@8.0.1)(vite@5.4.11(@types/node@22.9.0))
+      '@medusajs/types': 2.0.7(awilix@8.0.1)(vite@5.4.11(@types/node@22.9.0))
       fetch-event-stream: 0.1.5
       qs: 6.13.0
     transitivePeerDependencies:
@@ -4955,7 +4971,7 @@ snapshots:
       - ioredis
       - vite
 
-  '@medusajs/types@2.0.4(awilix@8.0.1)(vite@5.4.11(@types/node@22.9.0))':
+  '@medusajs/types@2.0.7(awilix@8.0.1)(vite@5.4.11(@types/node@22.9.0))':
     dependencies:
       awilix: 8.0.1
       bignumber.js: 9.1.2
@@ -5052,6 +5068,22 @@ snapshots:
       '@radix-ui/react-primitive': 2.0.0(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-use-callback-ref': 1.1.0(@types/react@18.3.12)(react@18.3.1)
       '@radix-ui/react-use-layout-effect': 1.1.0(@types/react@18.3.12)(react@18.3.1)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+    optionalDependencies:
+      '@types/react': 18.3.12
+      '@types/react-dom': 18.3.1
+
+  '@radix-ui/react-checkbox@1.1.2(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@radix-ui/primitive': 1.1.0
+      '@radix-ui/react-compose-refs': 1.1.0(@types/react@18.3.12)(react@18.3.1)
+      '@radix-ui/react-context': 1.1.1(@types/react@18.3.12)(react@18.3.1)
+      '@radix-ui/react-presence': 1.1.1(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-primitive': 2.0.0(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-use-controllable-state': 1.1.0(@types/react@18.3.12)(react@18.3.1)
+      '@radix-ui/react-use-previous': 1.1.0(@types/react@18.3.12)(react@18.3.1)
+      '@radix-ui/react-use-size': 1.1.0(@types/react@18.3.12)(react@18.3.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
     optionalDependencies:

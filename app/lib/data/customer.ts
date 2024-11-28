@@ -86,21 +86,22 @@ export const signout = withAuthHeaders(async function (request) {
   redirect("/login");
 });
 
+export type AddressArgs = {
+  first_name: string;
+  last_name: string;
+  company: string;
+  address_1: string;
+  address_2: string;
+  city: string;
+  postal_code: string;
+  province: string;
+  country_code: string;
+  phone: string;
+};
 export const addCustomerAddress = withAuthHeaders(async function (
   request,
   authHeaders,
-  data: {
-    first_name: string;
-    last_name: string;
-    company: string;
-    address_1: string;
-    address_2: string;
-    city: string;
-    postal_code: string;
-    province: string;
-    country_code: string;
-    phone: string;
-  }
+  data: AddressArgs
 ) {
   return sdk.store.customer
     .createAddress(data, {}, authHeaders)
@@ -123,18 +124,7 @@ export const updateCustomerAddress = withAuthHeaders(async function (
   request,
   authHeaders,
   currentState: Record<string, unknown>,
-  data: {
-    first_name: string;
-    last_name: string;
-    company: string;
-    address_1: string;
-    address_2: string;
-    city: string;
-    postal_code: string;
-    province: string;
-    country_code: string;
-    phone: string;
-  }
+  data: AddressArgs
 ) {
   const addressId = currentState.addressId as string;
 

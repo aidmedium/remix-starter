@@ -1,10 +1,13 @@
+import { redirect } from "@remix-run/node";
+
 import { HttpTypes } from "@medusajs/types";
 import lodash from "lodash";
 
 import { sdk } from "@/lib/config";
 import medusaError from "@/lib/utils/medusa-error";
 
-import { getCartId, setCartId, withAuthHeaders } from "./cookies";
+import { getCartId, removeCartId, setCartId, withAuthHeaders } from "./cookies";
+import { AddressArgs } from "./customer";
 import { getProductsById } from "./products";
 import { getRegion } from "./regions";
 
@@ -12,7 +15,6 @@ const { omit } = lodash;
 
 export const retrieveCart = withAuthHeaders(async function (request, authHeaders) {
   const cartId = await getCartId(request.headers);
-  console.log("cartId", cartId);
 
   if (!cartId) {
     return null;
@@ -158,3 +160,59 @@ export async function enrichLineItems(
 
   return enrichedItems;
 }
+
+export const updateCart = withAuthHeaders(async function (
+  request,
+  authHeaders,
+  data: HttpTypes.StoreUpdateCart
+) {
+  const cartId = await getCartId(request.headers);
+  if (!cartId) {
+    throw new Error("No existing cart found, please create one before updating");
+  }
+
+  return sdk.store.cart
+    .update(cartId, data, {}, authHeaders)
+    .then(({ cart }) => {
+      return cart;
+    })
+    .catch(medusaError);
+});
+
+export const placeOrder = withAuthHeaders(async function (
+  request,
+  authHeaders,
+  data: {
+    email: string;
+    shipping_address: AddressArgs;
+    billing_address?: Partial<AddressArgs>;
+    same_as_billing?: string;
+  }
+) {
+  const cartId = await getCartId(request.headers);
+  if (!cartId) {
+    return { error: "No existing cart found when setting addresses" };
+  }
+  console.log("cartId", cartId);
+
+  const { same_as_billing, ...orderData } = data;
+  if (same_as_billing === "on") orderData.billing_address = orderData.shipping_address;
+
+  try {
+    const cart = await updateCart(request, orderData);
+    console.log("cart update", cart);
+    // TODO: ensure customer is linked to cart
+    // await sdk.store.cart.transferCart(cart.id, {}, authHeaders);
+    const result = await sdk.store.cart.complete(cart.id, {}, authHeaders).catch(medusaError);
+    console.log("checkout result", result);
+
+    if (result.type !== "order") {
+      return { error: result.error };
+    }
+
+    await removeCartId(request.headers);
+    redirect(`/${orderData.shipping_address.country_code}/order/confirmed/${result.order.id}`);
+  } catch (e: any) {
+    return { error: e.message };
+  }
+});
