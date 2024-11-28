@@ -2,6 +2,9 @@ import { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
 import { useFetcher, useRouteLoaderData } from "@remix-run/react";
 import { useState } from "react";
 
+import { loader } from "@/routes/$cc";
+
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FormControl, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -11,8 +14,6 @@ import { placeOrder } from "@/lib/data/cart";
 import { AddressArgs } from "@/lib/data/customer";
 import { convertToLocale } from "@/lib/utils/money";
 import { validateCheckoutForm } from "@/modules/checkout/validate";
-
-import { loader } from "./$cc";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Checkout" }];
@@ -29,7 +30,6 @@ export async function action({
   const formData = await request.formData();
   const { data, errors } = validateCheckoutForm(formData);
 
-  console.log(data, errors);
   if (!data) {
     return errors;
   }
@@ -159,6 +159,12 @@ export default function Checkout() {
       </div>
 
       <div className="sticky top-0 flex flex-col justify-end gap-6">
+        {fetcher.data?.error && (
+          <Alert variant="destructive">
+            <AlertDescription>{fetcher.data?.error}</AlertDescription>
+          </Alert>
+        )}
+
         <div className="flex w-full flex-col font-semibold [&>div]:flex [&>div]:justify-between">
           <div>
             <Paragraph>Subtotal</Paragraph>
@@ -191,7 +197,6 @@ export default function Checkout() {
           Place Order
         </Button>
       </div>
-      <Paragraph className="text-destructive">{fetcher.data?.error}</Paragraph>
     </fetcher.Form>
   );
 }

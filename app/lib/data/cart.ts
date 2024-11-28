@@ -193,18 +193,15 @@ export const placeOrder = withAuthHeaders(async function (
   if (!cartId) {
     return { error: "No existing cart found when setting addresses" };
   }
-  console.log("cartId", cartId);
 
   const { same_as_billing, ...orderData } = data;
   if (same_as_billing === "on") orderData.billing_address = orderData.shipping_address;
 
   try {
     const cart = await updateCart(request, orderData);
-    console.log("cart update", cart);
     // TODO: ensure customer is linked to cart
     // await sdk.store.cart.transferCart(cart.id, {}, authHeaders);
     const result = await sdk.store.cart.complete(cart.id, {}, authHeaders).catch(medusaError);
-    console.log("checkout result", result);
 
     if (result.type !== "order") {
       return { error: result.error };
