@@ -25,8 +25,8 @@ export default function StoreLayout() {
 
   return (
     <div className="container md:px-10">
-      <section className="my-10">
-        <Button onClick={() => toggleCartOpen(true)}>cart</Button>
+      <section className="py-6">
+        <Button onClick={() => toggleCartOpen(true)}>View Cart</Button>
       </section>
 
       <Outlet />

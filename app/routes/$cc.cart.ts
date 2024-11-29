@@ -7,17 +7,17 @@ import { addToCart, deleteLineItem, updateLineItem } from "@/lib/data/cart";
 export const action = async (args: ActionFunctionArgs) => {
   switch (args.request.method) {
     case "POST":
-      return postHandler(args);
+      return addToCartHandler(args);
     case "PATCH":
-      return patchHandler(args);
+      return updateCartItemHandler(args);
     case "DELETE":
-      return deleteHandler(args);
+      return removeCartItemHandler(args);
     default:
       return { error: "Method not allowed" };
   }
 };
 
-async function postHandler({ request, params }: ActionFunctionArgs) {
+async function addToCartHandler({ request, params }: ActionFunctionArgs) {
   const countryCode = params.cc;
   if (!countryCode) {
     return { error: "Missing country code" };
@@ -44,7 +44,7 @@ async function postHandler({ request, params }: ActionFunctionArgs) {
   return data({ error: null }, { headers: request.headers });
 }
 
-async function patchHandler({ request }: ActionFunctionArgs) {
+async function updateCartItemHandler({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   const lineId = z.string().safeParse(formData.get("lineId"));
   const quantity = z.string().safeParse(formData.get("quantity"));
@@ -65,7 +65,7 @@ async function patchHandler({ request }: ActionFunctionArgs) {
   return data({ error: null }, { headers: request.headers });
 }
 
-async function deleteHandler({ request }: ActionFunctionArgs) {
+async function removeCartItemHandler({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   const lineId = z.string().safeParse(formData.get("lineId"));
 
